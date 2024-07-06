@@ -1,0 +1,2 @@
+from .attraction import AttractionListCreateAPIView, AttractionDetailAPIView
+from .comment import CommentListCreateAPIView, CommentDetailAPIView
