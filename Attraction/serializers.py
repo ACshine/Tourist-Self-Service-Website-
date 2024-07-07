@@ -52,7 +52,12 @@ class AttractionSerializer(serializers.ModelSerializer):
         model = Attraction
         fields = '__all__'
 
+
+
+
 class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+
     class Meta:
         model = Comment
         fields = '__all__'
