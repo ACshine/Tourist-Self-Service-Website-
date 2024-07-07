@@ -26,7 +26,10 @@ SECRET_KEY = "django-insecure-(nxxginaf)y^qh5w64&u-+kcc16g)+4f!)+rych432^kj33$@i
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+#允许所有的请求头
+CORS_ALLOW_HEADERS = ('*')
 
 # Application definition
 
@@ -42,18 +45,21 @@ INSTALLED_APPS = [
     "Attraction",
     "Tourist",
     'drf_spectacular',
+    'corsheaders'
 
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
 
 ROOT_URLCONF = "TouristSelfServiceBackend.urls"
 
