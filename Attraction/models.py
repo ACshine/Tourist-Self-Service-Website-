@@ -14,9 +14,21 @@ class Attraction(models.Model):
     comment_count = models.IntegerField(verbose_name="评论数")
     address = models.CharField(max_length=200, verbose_name="地址")
     official_phone = models.CharField(max_length=100, verbose_name="官方电话")
+    search_count = models.IntegerField(default=0, verbose_name="搜索次数")  # 新增搜索次数字段
 
     def __str__(self):
         return self.name
+
+    def update_popularity(self):
+        # 热度算法：考虑搜索次数、评分和评论数
+        if self.search_count + self.comment_count == 0:
+            self.popularity = 0
+        else:
+            self.popularity = min(
+                10,
+                (self.search_count + (self.rating * self.comment_count)) / 10
+            )
+        self.save()
 
     class Meta:
         db_table = 'attraction'

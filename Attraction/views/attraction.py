@@ -46,6 +46,11 @@ class AttractionDetailAPIView(APIView):
         attraction = self.get_object(pk)
         if attraction is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # 增加搜索次数并更新热度
+        attraction.search_count += 1
+        attraction.update_popularity()
+
         serializer = AttractionSerializer(attraction)
         return Response(serializer.data)
 
