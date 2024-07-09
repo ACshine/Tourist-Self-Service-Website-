@@ -5,7 +5,6 @@ from rest_framework import status
 from ..models import Attraction, Comment, AttractionImage, CommentImage
 from ..serializers import AttractionSerializer, CommentSerializer, AttractionImageSerializer, CommentImageSerializer
 
-
 class AttractionCommentListAPIView(APIView):
     permission_classes = [AllowAny]
 
