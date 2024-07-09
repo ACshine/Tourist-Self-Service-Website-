@@ -14,7 +14,7 @@ class AttractionListCreateAPIView(APIView):
 
     def get(self, request):
         attractions = Attraction.objects.all()
-        serializer = AttractionSerializer(attractions, many=True)
+        serializer = AttractionSerializer(attractions, many=True, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request):
@@ -26,7 +26,7 @@ class AttractionListCreateAPIView(APIView):
         if Attraction.objects.filter(name=name, address=address).exists():
             return Response({"error": "Attraction with this name and address already exists."}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = AttractionSerializer(data=request.data)
+        serializer = AttractionSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             attraction = serializer.save()
             images = request.FILES.getlist('images')
@@ -57,7 +57,7 @@ class AttractionDetailAPIView(APIView):
         attraction.search_count += 1
         attraction.update_popularity()
 
-        serializer = AttractionSerializer(attraction)
+        serializer = AttractionSerializer(attraction, context={'request': request})
         return Response(serializer.data)
 
     def put(self, request, pk):
@@ -67,7 +67,7 @@ class AttractionDetailAPIView(APIView):
         attraction = self.get_object(pk)
         if attraction is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = AttractionSerializer(attraction, data=request.data)
+        serializer = AttractionSerializer(attraction, data=request.data, context={'request': request})
         if serializer.is_valid():
             attraction = serializer.save()
             images = request.FILES.getlist('images')
