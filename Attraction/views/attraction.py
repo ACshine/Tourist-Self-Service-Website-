@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import Attraction
@@ -7,7 +7,11 @@ from ..serializers import AttractionSerializer
 
 
 class AttractionListCreateAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
     def get(self, request):
         attractions = Attraction.objects.all()
@@ -26,7 +30,11 @@ class AttractionListCreateAPIView(APIView):
 
 
 class AttractionDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
     def get_object(self, pk):
         try:
