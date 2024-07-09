@@ -43,6 +43,15 @@ class CommentDetailAPIView(APIView):
         comment = self.get_object(pk)
         if isinstance(comment, Response):
             return comment
+
+        # 检查用户权限
+        if comment.user != request.user.tourist and request.user.tourist.user_type != 'admin':
+            return Response({"error": "You do not have permission to edit this comment."}, status=status.HTTP_403_FORBIDDEN)
+
+        # 如果包含 'is_featured' 字段，检查是否为管理员
+        if 'is_featured' in request.data and request.user.tourist.user_type != 'admin':
+            return Response({"error": "Only administrators can set featured comments."}, status=status.HTTP_403_FORBIDDEN)
+
         serializer = CommentSerializer(comment, data=request.data)
         if serializer.is_valid():
             comment = serializer.save(user=request.user.tourist)
@@ -56,5 +65,10 @@ class CommentDetailAPIView(APIView):
         comment = self.get_object(pk)
         if isinstance(comment, Response):
             return comment
+
+        # 检查用户权限
+        if comment.user != request.user.tourist and request.user.tourist.user_type != 'admin':
+            return Response({"error": "You do not have permission to delete this comment."}, status=status.HTTP_403_FORBIDDEN)
+
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
