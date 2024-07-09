@@ -46,6 +46,11 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ['rating', 'is_featured']
     ordering = ['-created_at']
     fieldsets = (
-        (None, {'fields': ('user', 'attraction', 'created_at', 'comment_text', 'rating', 'likes', 'is_featured')}),
+        (None, {'fields': ('user', 'attraction', 'comment_text', 'rating', 'likes', 'is_featured')}),
     )
     inlines = [CommentImageInline]
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # editing an existing object
+            return self.readonly_fields + ('created_at',)
+        return self.readonly_fields

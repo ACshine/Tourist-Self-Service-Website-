@@ -49,9 +49,17 @@ class TouristSerializer(serializers.ModelSerializer):
         return tourist
 
 class AttractionImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = AttractionImage
         fields = ['id', 'image']
+
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.image and hasattr(obj.image, 'url'):
+            return request.build_absolute_uri(obj.image.url)
+        return None
 
 class AttractionSerializer(serializers.ModelSerializer):
     images = AttractionImageSerializer(many=True, read_only=True)
@@ -61,13 +69,22 @@ class AttractionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CommentImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = CommentImage
         fields = ['id', 'image']
 
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.image and hasattr(obj.image, 'url'):
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     images = CommentImageSerializer(many=True, read_only=True)
+    created_at = serializers.ReadOnlyField()
 
     class Meta:
         model = Comment
