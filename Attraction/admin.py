@@ -17,12 +17,12 @@ class AttractionImageInline(admin.TabularInline):
 
 @admin.register(Attraction)
 class AttractionAdmin(admin.ModelAdmin):
-    list_display = ['name', 'star_level', 'rating', 'popularity', 'comment_count', 'address', 'official_phone']
+    list_display = ['name', 'star_level', 'rating', 'popularity', 'comment_count', 'search_count', 'address', 'official_phone']
     search_fields = ['name', 'address']
     list_filter = ['star_level', 'rating']
     ordering = ['name']
     fieldsets = (
-        (None, {'fields': ('name', 'star_level', 'rating', 'description', 'opening_hours', 'popularity', 'comment_count', 'address', 'official_phone')}),
+        (None, {'fields': ('name', 'star_level', 'rating', 'description', 'opening_hours', 'popularity', 'comment_count', 'search_count', 'address', 'official_phone')}),
     )
     inlines = [AttractionImageInline]
 

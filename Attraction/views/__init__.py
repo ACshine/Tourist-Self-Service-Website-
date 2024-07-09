@@ -1,2 +1,2 @@
-from .attraction import AttractionListCreateAPIView, AttractionDetailAPIView
+from .attraction import AttractionListCreateAPIView, AttractionDetailAPIView,AttractionCommentListAPIView
 from .comment import CommentListCreateAPIView, CommentDetailAPIView

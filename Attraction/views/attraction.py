@@ -5,6 +5,16 @@ from rest_framework import status
 from ..models import Attraction, Comment, AttractionImage, CommentImage
 from ..serializers import AttractionSerializer, CommentSerializer, AttractionImageSerializer, CommentImageSerializer
 
+
+class AttractionCommentListAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, attraction_id):
+        comments = Comment.objects.filter(attraction_id=attraction_id)
+        serializer = CommentSerializer(comments, many=True, context={'request': request})
+        return Response(serializer.data)
+
+
 class AttractionListCreateAPIView(APIView):
 
     def get_permissions(self):
@@ -85,3 +95,5 @@ class AttractionDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         attraction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+

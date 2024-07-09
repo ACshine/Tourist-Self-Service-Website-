@@ -5,14 +5,14 @@ from Tourist.models import Tourist
 class Attraction(models.Model):
     name = models.CharField(max_length=100, verbose_name="名称")
     star_level = models.IntegerField(verbose_name="星级")
-    rating = models.DecimalField(max_digits=3, decimal_places=2, verbose_name="评分")
+    rating = models.DecimalField(max_digits=3, decimal_places=2, verbose_name="评分", default=0)
     description = models.TextField(verbose_name="介绍")
     opening_hours = models.CharField(max_length=100, verbose_name="开放时间")
     popularity = models.DecimalField(
         max_digits=3, decimal_places=1, verbose_name="热度",
         validators=[MinValueValidator(0), MaxValueValidator(10)]
     )
-    comment_count = models.IntegerField(verbose_name="评论数")
+    comment_count = models.IntegerField(verbose_name="评论数", default=0)
     address = models.CharField(max_length=200, verbose_name="地址")
     official_phone = models.CharField(max_length=100, verbose_name="官方电话")
     search_count = models.IntegerField(default=0, verbose_name="搜索次数")  # 新增搜索次数字段
@@ -29,6 +29,12 @@ class Attraction(models.Model):
                 10,
                 (self.search_count + (self.rating * self.comment_count)) / 10
             )
+        self.save()
+
+    def update_rating(self):
+        comments = self.comments.all()
+        total_rating = sum(comment.rating for comment in comments)
+        self.rating = total_rating / comments.count() if comments.count() > 0 else 0
         self.save()
 
     class Meta:
@@ -52,6 +58,14 @@ class Comment(models.Model):
     rating = models.DecimalField(max_digits=2, decimal_places=1, verbose_name="评分")  # 打分，0.0-5.0
     likes = models.IntegerField(default=0, verbose_name="点赞数")
     is_featured = models.BooleanField(default=False, verbose_name="是否精华")
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.attraction.update_rating()
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.attraction.update_rating()
 
     def __str__(self):
         return f'Comment by {self.user.user.username} on {self.attraction.name}'

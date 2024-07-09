@@ -10,7 +10,7 @@ class CommentListCreateAPIView(APIView):
 
     def get(self, request):
         comments = Comment.objects.all()
-        serializer = CommentSerializer(comments, many=True)
+        serializer = CommentSerializer(comments, many=True, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request):
@@ -36,7 +36,7 @@ class CommentDetailAPIView(APIView):
         comment = self.get_object(pk)
         if isinstance(comment, Response):
             return comment
-        serializer = CommentSerializer(comment)
+        serializer = CommentSerializer(comment, context={'request': request})
         return Response(serializer.data)
 
     def put(self, request, pk):
@@ -52,7 +52,7 @@ class CommentDetailAPIView(APIView):
         if 'is_featured' in request.data and request.user.tourist.user_type != 'admin':
             return Response({"error": "Only administrators can set featured comments."}, status=status.HTTP_403_FORBIDDEN)
 
-        serializer = CommentSerializer(comment, data=request.data)
+        serializer = CommentSerializer(comment, data=request.data, context={'request': request})
         if serializer.is_valid():
             comment = serializer.save(user=request.user.tourist)
             images = request.FILES.getlist('images')
