@@ -2,9 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import Attraction
-from ..serializers import AttractionSerializer
-
+from ..models import Attraction, Comment, AttractionImage, CommentImage
+from ..serializers import AttractionSerializer, CommentSerializer, AttractionImageSerializer, CommentImageSerializer
 
 class AttractionListCreateAPIView(APIView):
 
@@ -22,12 +21,19 @@ class AttractionListCreateAPIView(APIView):
         if request.user.tourist.user_type != 'admin':
             return Response({"error": "Only administrators can add attractions."}, status=status.HTTP_403_FORBIDDEN)
 
+        name = request.data.get('name')
+        address = request.data.get('address')
+        if Attraction.objects.filter(name=name, address=address).exists():
+            return Response({"error": "Attraction with this name and address already exists."}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = AttractionSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            attraction = serializer.save()
+            images = request.FILES.getlist('images')
+            for image in images:
+                AttractionImage.objects.create(attraction=attraction, image=image)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class AttractionDetailAPIView(APIView):
 
@@ -63,7 +69,10 @@ class AttractionDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = AttractionSerializer(attraction, data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            attraction = serializer.save()
+            images = request.FILES.getlist('images')
+            for image in images:
+                AttractionImage.objects.create(attraction=attraction, image=image)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

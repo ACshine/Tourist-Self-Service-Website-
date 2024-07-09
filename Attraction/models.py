@@ -1,6 +1,7 @@
 from django.db import models
-from Tourist.models import Tourist
 from django.core.validators import MinValueValidator, MaxValueValidator
+from Tourist.models import Tourist
+
 class Attraction(models.Model):
     name = models.CharField(max_length=100, verbose_name="名称")
     star_level = models.IntegerField(verbose_name="星级")
@@ -36,16 +37,20 @@ class Attraction(models.Model):
         verbose_name = '景点'
         verbose_name_plural = '景点'
 
+class AttractionImage(models.Model):
+    attraction = models.ForeignKey(Attraction, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='attraction_images/', verbose_name="景点图片")
 
+    def __str__(self):
+        return f"Image for {self.attraction.name}"
 
 class Comment(models.Model):
     user = models.ForeignKey(Tourist, on_delete=models.CASCADE, verbose_name="用户")
-    attraction = models.ForeignKey('Attraction', related_name='comments', on_delete=models.CASCADE, verbose_name="景点")
+    attraction = models.ForeignKey(Attraction, related_name='comments', on_delete=models.CASCADE, verbose_name="景点")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="评论时间")
     comment_text = models.TextField(verbose_name="评论内容")
     rating = models.DecimalField(max_digits=2, decimal_places=1, verbose_name="评分")  # 打分，0.0-5.0
     likes = models.IntegerField(default=0, verbose_name="点赞数")
-    optional_image = models.ImageField(upload_to='comments/', blank=True, null=True, verbose_name="可选图片")
     is_featured = models.BooleanField(default=False, verbose_name="是否精华")
 
     def __str__(self):
@@ -60,3 +65,9 @@ class Comment(models.Model):
             models.Index(fields=['created_at']),
         ]
 
+class CommentImage(models.Model):
+    comment = models.ForeignKey(Comment, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='comment_images/', verbose_name="评论图片")
+
+    def __str__(self):
+        return f"Image for comment by {self.comment.user.user.username}"

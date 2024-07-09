@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import Comment
-from ..serializers import CommentSerializer
+from ..models import Attraction, Comment, AttractionImage, CommentImage
+from ..serializers import AttractionSerializer, CommentSerializer, AttractionImageSerializer, CommentImageSerializer
 
 class CommentListCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -16,7 +16,10 @@ class CommentListCreateAPIView(APIView):
     def post(self, request):
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user.tourist)
+            comment = serializer.save(user=request.user.tourist)
+            images = request.FILES.getlist('images')
+            for image in images:
+                CommentImage.objects.create(comment=comment, image=image)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -42,7 +45,10 @@ class CommentDetailAPIView(APIView):
             return comment
         serializer = CommentSerializer(comment, data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user.tourist)
+            comment = serializer.save(user=request.user.tourist)
+            images = request.FILES.getlist('images')
+            for image in images:
+                CommentImage.objects.create(comment=comment, image=image)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

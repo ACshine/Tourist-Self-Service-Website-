@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Tourist, Attraction, Comment
+from .models import Tourist, Attraction, Comment, AttractionImage, CommentImage
 import re
+
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
     password2 = serializers.CharField(write_only=True, required=True, label="Confirm password")
@@ -47,16 +48,26 @@ class TouristSerializer(serializers.ModelSerializer):
         tourist, created = Tourist.objects.update_or_create(user=user, user_type=validated_data.pop('user_type'))
         return tourist
 
+class AttractionImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AttractionImage
+        fields = ['id', 'image']
+
 class AttractionSerializer(serializers.ModelSerializer):
+    images = AttractionImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = Attraction
         fields = '__all__'
 
-
-
+class CommentImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentImage
+        fields = ['id', 'image']
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+    images = CommentImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Comment
