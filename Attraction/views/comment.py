@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import Attraction, Comment, AttractionImage, CommentImage
+from ..models import Attraction, Comment, CommentImage
 from ..serializers import AttractionSerializer, CommentSerializer, AttractionImageSerializer, CommentImageSerializer
 
 class CommentListCreateAPIView(APIView):

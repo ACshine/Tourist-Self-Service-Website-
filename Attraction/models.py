@@ -37,6 +37,10 @@ class Attraction(models.Model):
         self.rating = total_rating / comments.count() if comments.count() > 0 else 0
         self.save()
 
+    def update_comment_count(self):
+        self.comment_count = self.comments.count()
+        self.save()
+
     class Meta:
         db_table = 'attraction'
         ordering = ['name']
@@ -62,10 +66,12 @@ class Comment(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.attraction.update_rating()
+        self.attraction.update_comment_count()
 
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
         self.attraction.update_rating()
+        self.attraction.update_comment_count()
 
     def __str__(self):
         return f'Comment by {self.user.user.username} on {self.attraction.name}'
