@@ -2,8 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import Attraction, Comment, AttractionImage, CommentImage
+from ..models import Attraction, Comment, CommentImage
 from ..serializers import AttractionSerializer, CommentSerializer, AttractionImageSerializer, CommentImageSerializer
+
 class CommentListCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -13,14 +14,12 @@ class CommentListCreateAPIView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = CommentSerializer(data=request.data)
+        serializer = CommentSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             comment = serializer.save(user=request.user.tourist)
             images = request.FILES.getlist('images')
             for image in images:
                 CommentImage.objects.create(comment=comment, image=image)
-            # 更新评论数量
-            comment.attraction.update_comment_count()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -72,6 +71,4 @@ class CommentDetailAPIView(APIView):
             return Response({"error": "You do not have permission to delete this comment."}, status=status.HTTP_403_FORBIDDEN)
 
         comment.delete()
-        # 更新评论数量
-        comment.attraction.update_comment_count()
         return Response(status=status.HTTP_204_NO_CONTENT)
