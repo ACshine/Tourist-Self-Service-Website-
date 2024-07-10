@@ -1,2 +1,3 @@
 from .register import RegisterAPIView
 from .login import LoginAPIView
+from .profile import  UserProfileAPIView, FrequentTravelerListCreateAPIView, FrequentTravelerDetailAPIView, FavoriteAttractionListCreateAPIView, FavoriteAttractionDetailAPIView

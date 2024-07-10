@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import Attraction, Comment, AttractionImage, CommentImage
+from ..models import Attraction, Comment, CommentImage, AttractionImage
 from ..serializers import AttractionSerializer, CommentSerializer, AttractionImageSerializer, CommentImageSerializer
 
 class AttractionCommentListAPIView(APIView):
@@ -12,7 +12,6 @@ class AttractionCommentListAPIView(APIView):
         comments = Comment.objects.filter(attraction_id=attraction_id)
         serializer = CommentSerializer(comments, many=True, context={'request': request})
         return Response(serializer.data)
-
 
 class AttractionListCreateAPIView(APIView):
 
@@ -94,5 +93,4 @@ class AttractionDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         attraction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 

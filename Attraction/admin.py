@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import Attraction, AttractionImage, Comment, CommentImage
 
+
 class AttractionImageInline(admin.TabularInline):
     model = AttractionImage
     extra = 1

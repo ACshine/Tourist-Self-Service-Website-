@@ -67,11 +67,16 @@ class Comment(models.Model):
         super().save(*args, **kwargs)
         self.attraction.update_rating()
         self.attraction.update_comment_count()
+        self.user.points += 10  # 每次评论增加10积分
+        self.user.update_user_type()  # 更新用户类型
+        self.user.save()
 
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
         self.attraction.update_rating()
         self.attraction.update_comment_count()
+        self.user.update_user_type()  # 更新用户类型
+        self.user.save()
 
     def __str__(self):
         return f'Comment by {self.user.user.username} on {self.attraction.name}'

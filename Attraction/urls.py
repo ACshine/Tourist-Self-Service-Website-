@@ -1,11 +1,5 @@
 from django.urls import path
-from .views import (
-    AttractionListCreateAPIView,
-    AttractionDetailAPIView,
-    CommentListCreateAPIView,
-    CommentDetailAPIView,
-    AttractionCommentListAPIView
-)
+from .views import AttractionListCreateAPIView, AttractionDetailAPIView, AttractionCommentListAPIView, CommentListCreateAPIView, CommentDetailAPIView
 
 urlpatterns = [
     path('attractions/', AttractionListCreateAPIView.as_view(), name='attraction-list-create'),

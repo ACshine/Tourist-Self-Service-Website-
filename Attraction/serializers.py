@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Tourist, Attraction, Comment, AttractionImage, CommentImage
+from Tourist.models import Tourist, FrequentTraveler, FavoriteAttraction
+from .models import Attraction, Comment, AttractionImage, CommentImage
 import re
 
 class UserSerializer(serializers.ModelSerializer):
@@ -40,7 +41,7 @@ class TouristSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tourist
-        fields = ['user', 'avatar', 'user_type']
+        fields = ['user', 'avatar', 'user_type', 'points']  # 新增积分字段
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
@@ -88,4 +89,16 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
+        fields = '__all__'
+
+class FrequentTravelerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FrequentTraveler
+        fields = '__all__'
+
+class FavoriteAttractionSerializer(serializers.ModelSerializer):
+    attraction = serializers.StringRelatedField()
+
+    class Meta:
+        model = FavoriteAttraction
         fields = '__all__'
