@@ -67,7 +67,7 @@ class Comment(models.Model):
         super().save(*args, **kwargs)
         self.attraction.update_rating()
         self.attraction.update_comment_count()
-        self.user.points += 10  # 每次评论增加10积分
+        self.user.points += 10  # 每次评论增加10积分  vip
         self.user.update_user_type()  # 更新用户类型
         self.user.save()
 
