@@ -11,6 +11,11 @@ class Tourist(models.Model):
     def __str__(self):
         return self.user.username
 
+    def update_user_type(self):
+        if self.points >= 1000 and self.user_type != 'vip':
+            self.user_type = 'vip'
+            self.save(update_fields=['user_type'])
+
     class Meta:
         verbose_name = '旅客'
         verbose_name_plural = '旅客'
