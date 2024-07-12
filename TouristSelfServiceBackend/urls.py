@@ -25,6 +25,11 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/', include('Attraction.urls')),
     path('api/', include('Tourist.urls')),
+    path('api/', include('Agency.urls')),
+    path('api/', include('Route.urls')),
+    path('api/', include('Rt_At.urls')),
+    path('api/', include('Rt_Rq.urls')),
+    path('api/', include('Reservation.urls')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),  # swagger接口文档
     path('api-doc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),  # redoc接口文档

@@ -48,6 +48,11 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",  # DRF自带的token认证
     "Attraction",
     "Tourist",
+    "Agency",
+    "Route",
+    "Rt_At",
+    "Rt_Rq",
+    "Reservation",
     'drf_spectacular',
     'corsheaders'
 
