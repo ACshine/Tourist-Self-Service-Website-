@@ -10,7 +10,7 @@ class UserProfileAPIView(APIView):
 
     def get(self, request):
         tourist = request.user.tourist
-        serializer = TouristSerializer(tourist)
+        serializer = TouristSerializer(tourist, context={'request': request})
         return Response(serializer.data)
 
     def put(self, request):
