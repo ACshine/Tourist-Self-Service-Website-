@@ -6,7 +6,7 @@ from .models import Rt_Rq
 
 @admin.register(Rt_Rq)
 class Rt_RqAdmin(admin.ModelAdmin):
-    list_display = ('rt_id', 'rq', 'days', 'limit')
+    list_display = ('id', 'rt_id', 'rq', 'days', 'limit')
     list_filter = ('rt_id', 'rq')
     search_fields = ('rt_id__rt_name', 'rq')
-    ordering = ('rt_id', 'rq')  # 排序选项
+    ordering = ('id', 'rq')  # 排序选项

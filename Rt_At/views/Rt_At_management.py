@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+
+from Attraction.serializers import AttractionSerializer
 from ..models import Rt_At
 from ..serializers import Rt_AtSerializer
 
@@ -23,6 +25,16 @@ class Rt_AtListCreateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Rt_AtRouteAttractionsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, route_id):
+        rt_ats = Rt_At.objects.filter(rt_id=route_id)
+        attractions = [rt_at.at_id for rt_at in rt_ats]
+        serializer = AttractionSerializer(attractions, many=True)
+        return Response(serializer.data)
 
 
 class Rt_AtDetailAPIView(APIView):

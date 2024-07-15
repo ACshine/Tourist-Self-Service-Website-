@@ -1,1 +1,1 @@
-from .Rt_At_management import Rt_AtListCreateAPIView, Rt_AtDetailAPIView
+from .Rt_At_management import Rt_AtListCreateAPIView, Rt_AtDetailAPIView, Rt_AtRouteAttractionsAPIView

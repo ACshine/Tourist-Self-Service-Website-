@@ -21,6 +21,32 @@ class ReservationListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ReservationsByDateAPIView(APIView):
+
+    def get(self, request, date):
+        reservations = Reservation.objects.filter(rv_date=date)
+        serializer = ReservationSerializer(reservations, many=True)
+        return Response(serializer.data)
+
+
+class ReservationsByTouristAPIView(APIView):
+
+    def get(self, request, tr_id):
+        reservations = Reservation.objects.filter(tr_id=tr_id)
+        serializer = ReservationSerializer(reservations, many=True)
+        return Response(serializer.data)
+
+
+class ReservationsByRouteAPIView(APIView):
+
+    def get(self, request, rt_rq_id):
+        rt_rqs = Rt_Rq.objects.filter(pk=rt_rq_id)
+        reservation_ids = [rt_rq.id for rt_rq in rt_rqs]
+        reservations = Reservation.objects.filter(rt_rq_id__in=reservation_ids)
+        serializer = ReservationSerializer(reservations, many=True)
+        return Response(serializer.data)
+
+
 class ReservationDetailAPIView(APIView):
 
     def get_object(self, pk):
