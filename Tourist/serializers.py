@@ -22,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
-        user = self.context['request'].user
+        user = self.context['request'].user if 'request' in self.context else None
         if 'password' in data and 'password2' in data:
             if data['password'] != data['password2']:
                 raise serializers.ValidationError("Passwords do not match.")
@@ -87,7 +87,6 @@ class TouristSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-
 class FrequentTravelerSerializer(serializers.ModelSerializer):
     class Meta:
         model = FrequentTraveler
@@ -98,7 +97,6 @@ class FrequentTravelerSerializer(serializers.ModelSerializer):
         user = self.context['request'].user.tourist
         validated_data['user'] = user
         return super().create(validated_data)
-
 
 class FavoriteAttractionSerializer(serializers.ModelSerializer):
     class Meta:
